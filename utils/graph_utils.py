@@ -2,7 +2,7 @@ from typing import List, Iterator, Tuple
 
 import numpy as np
 
-from utils.bit_utils import enumerate_bit_strings
+from utils.bit_utils import enumerate_bit_strings, bits_to_index
 
 
 def enumerate_simple_acyclic_digraphs_adjacency_matrices(
@@ -54,6 +54,7 @@ def add_new_row(
     remaining_nodes = size - node_index
 
     nodes_with_outputs = [any(row[i] for row in current_rows) for i in range(sources, node_index + 1)]
+    last_row_idx = bits_to_index(reversed(current_rows[-1]))
 
     # Inputs can only be previous nodes.
     for row_base in enumerate_bit_strings(node_index, min_ones=2, max_ones=fan_in):
@@ -63,8 +64,9 @@ def add_new_row(
                 + (False, ) * remaining_nodes
         )
 
-        # Must be different from all other nodes.
-        if row in current_rows:
+        # Node identity does not matter.
+        new_row_idx = bits_to_index(reversed(row))
+        if new_row_idx <= last_row_idx:
             continue
 
         # All nodes must have output (except sinks & sources).

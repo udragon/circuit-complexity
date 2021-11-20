@@ -1,4 +1,4 @@
-from typing import Iterator, Optional, Tuple, List
+from typing import Iterator, Optional, Tuple, List, Iterable
 
 
 def enumerate_bit_strings(size: int, min_ones: int = 0, max_ones: Optional[int] = None) -> Iterator[Tuple[bool, ...]]:
@@ -15,7 +15,7 @@ def enumerate_bit_strings(size: int, min_ones: int = 0, max_ones: Optional[int] 
                 yield string + (True, )
 
 
-def bits_to_index(bits: List[bool]) -> int:
+def bits_to_index(bits: Iterable[bool]) -> int:
     res = 0
     for bit in bits:
         res *= 2
