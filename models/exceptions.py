@@ -1,0 +1,2 @@
+class CircuitCycleFound(Exception):
+    pass
