@@ -9,9 +9,10 @@ def main():
     logging.basicConfig(level=logging.INFO)
     hardness_dict = compute_hardness_dict(
         circuit_model=STANDARD_CIRCUIT_MODEL,
-        num_inputs=2,
+        num_inputs=3,
+        size_limit=10,
     )
-    plot_hardness_dict(hardness_dict, circuit_type='Standard', num_inputs=2)
+    plot_hardness_dict(hardness_dict, circuit_type='Standard', num_inputs=3)
 
 
 if __name__ == '__main__':

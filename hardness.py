@@ -36,15 +36,9 @@ def compute_hardness_dict(
 ) -> Dict[TruthTable, int]:
     num_truth_tables = 2**(2**num_inputs)
 
-    circuit_size = 1
-    tt_collection = compute_truth_tables(
-        circuit_model=circuit_model,
-        num_inputs=num_inputs,
-        circuit_size=circuit_size,
-    )
-    res = {tt: circuit_size for tt in tt_collection}
+    circuit_size = 0
+    res = {}
     while len(res) != num_truth_tables and (size_limit is None or circuit_size + 1 <= size_limit):
-        logging.info(f"Found {len(res)} /  {num_truth_tables} truth tables.")
         circuit_size += 1
         enumerated_tts = 0
         for tt in compute_truth_tables(
@@ -55,4 +49,5 @@ def compute_hardness_dict(
             enumerated_tts += 1
             if tt not in res:
                 res[tt] = circuit_size
+        logging.info(f"Found {len(res)} /  {num_truth_tables} truth tables.")
     return res
