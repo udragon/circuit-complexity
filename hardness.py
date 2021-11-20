@@ -1,3 +1,4 @@
+import json
 import logging
 from typing import Set, Dict, Optional
 
@@ -5,6 +6,7 @@ from circuit_enumeration import enumerate_circuits
 from models.circuit_model import CircuitModel
 from models.exceptions import CircuitCycleFound
 from models.truth_table import TruthTable
+from utils.decorators import timeit
 
 
 def compute_truth_tables(
@@ -29,6 +31,7 @@ def compute_truth_tables(
     return truth_tables
 
 
+@timeit
 def compute_hardness_dict(
         circuit_model: CircuitModel,
         num_inputs: int,
@@ -51,3 +54,7 @@ def compute_hardness_dict(
                 res[tt] = circuit_size
         logging.info(f"Found {len(res)} /  {num_truth_tables} truth tables.")
     return res
+
+
+def serialize_hardness_dict(hardness_dict: Dict[TruthTable, int], filename: str = "hardness.json") -> None:
+    json.dump({str(tt): hardness for tt, hardness in hardness_dict.items()}, open(filename, 'w'), indent=4)
