@@ -59,7 +59,6 @@ class GraphUtilsTest(unittest.TestCase):
             fan_in=2,
         )
         result = list(enumerator)
-        print(result)
         expected_result = [
             np.array([
                 [False, False, False, False],

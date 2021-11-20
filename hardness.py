@@ -1,3 +1,4 @@
+import logging
 from typing import Set, Dict, Optional
 
 from circuit_enumeration import enumerate_circuits
@@ -22,9 +23,9 @@ def compute_truth_tables(
         try:
             truth_tables.add(circuit.to_truth_table())
         except CircuitCycleFound:
-            print("CircuitCycleFound error")
+            logging.error("CircuitCycleFound error")
             pass
-    print(f"Enumerated on {counter} circuits.")
+    logging.info(f"Enumerated on {counter} circuits.")
     return truth_tables
 
 
@@ -43,7 +44,7 @@ def compute_hardness_dict(
     )
     res = {tt: circuit_size for tt in tt_collection}
     while len(res) != num_truth_tables and (size_limit is None or circuit_size + 1 <= size_limit):
-        print(f"Found {len(res)} /  {num_truth_tables} truth tables.")
+        logging.info(f"Found {len(res)} /  {num_truth_tables} truth tables.")
         circuit_size += 1
         enumerated_tts = 0
         for tt in compute_truth_tables(
@@ -54,5 +55,4 @@ def compute_hardness_dict(
             enumerated_tts += 1
             if tt not in res:
                 res[tt] = circuit_size
-        print(res)
     return res
