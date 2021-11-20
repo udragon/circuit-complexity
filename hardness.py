@@ -25,7 +25,7 @@ def compute_truth_tables(
         except CircuitCycleFound:
             logging.error("CircuitCycleFound error")
             pass
-    logging.info(f"Enumerated on {counter} circuits.")
+    logging.info(f"Enumerated on {counter} circuits of size {circuit_size}.")
     return truth_tables
 
 
