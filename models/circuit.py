@@ -61,10 +61,10 @@ class Circuit:
             return eval_cache[node_idx]
 
         node_operator = self.model.basis[self.node_operators[node_idx]]
-        res = node_operator([
+        res = node_operator(
             self._evaluate_node(input_node_idx, input_bits, calculation_path, eval_cache)
             for input_node_idx in self._get_inputs_by_id[node_idx]
-        ])
+        )
         eval_cache[node_idx] = res
         return res
 
