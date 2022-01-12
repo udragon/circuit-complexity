@@ -48,10 +48,29 @@ class TruthTable:
             new_bit_string[new_index] = bit
         return TruthTable(bit_string=new_bit_string)
 
-    def negate(self) -> TruthTable:
+    def negate_output(self) -> TruthTable:
         return TruthTable(bit_string=[not bit for bit in self.bit_string])
+
+    def negate_variable_all(self) -> Set[TruthTable]:
+        return {
+            self.negate_variable(variable_index)
+            for variable_index in range(self.variables)
+        }
+
+    def negate_variable(self, variable_index: int) -> TruthTable:
+        variables = self.variables
+        new_bit_string = [False] * len(self.bit_string)
+        for index, bit in enumerate(self.bit_string):
+            index_in_bits = index_to_bits(index, size=variables)
+            index_in_bits[variable_index] = not index_in_bits[variable_index]
+            new_index = bits_to_index(index_in_bits)
+            new_bit_string[new_index] = bit
+        return TruthTable(bit_string=new_bit_string)
 
     def get_equivalent_group(self) -> FrozenSet[TruthTable]:
         all_permutations = self.permute_all()
-        permutation_negations = {truth_table.negate() for truth_table in all_permutations}
-        return frozenset(all_permutations | permutation_negations)
+        all_permutations_and_variable_negations = {
+            tt for permutation in all_permutations for tt in permutation.negate_variable_all()
+        }
+        negated_outputs = {truth_table.negate_output() for truth_table in all_permutations_and_variable_negations}
+        return frozenset(all_permutations_and_variable_negations | negated_outputs)

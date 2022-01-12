@@ -66,7 +66,7 @@ def deserialize_hardness_dict(filename: str = "hardness.json") -> Dict[TruthTabl
     return {TruthTable.from_repr(tt): hardness for tt, hardness in raw_dict.items()}
 
 
-def equivalence_analysis(hardness_dict: Dict[TruthTable, int]) -> Dict[int, Set[FrozenSet[TruthTable]]]:
+def equivalence_analysis(hardness_dict: Dict[TruthTable, int]) -> Dict[int, List[FrozenSet[TruthTable]]]:
     hardness_to_tt_set = inverse_dict(hardness_dict)
     return {
         hardness: equivalence_analysis_for_tts(tt_set)
@@ -74,11 +74,11 @@ def equivalence_analysis(hardness_dict: Dict[TruthTable, int]) -> Dict[int, Set[
     }
 
 
-def equivalence_analysis_for_tts(tt_set: Set[TruthTable]) -> Set[FrozenSet[TruthTable]]:
+def equivalence_analysis_for_tts(tt_set: Set[TruthTable]) -> List[FrozenSet[TruthTable]]:
     equivalent_groups = set()
     while tt_set:
         tt = tt_set.pop()
         equivalent_group = tt.get_equivalent_group()
         equivalent_groups.add(equivalent_group)
         tt_set -= equivalent_group
-    return equivalent_groups
+    return sorted(equivalent_groups, key=len)
