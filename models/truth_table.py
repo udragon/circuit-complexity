@@ -5,6 +5,7 @@ from math import log2
 from typing import List, Set, Tuple, FrozenSet
 
 from utils.bit_utils import bits_to_index, bit_string_to_repr_string, permute_list, index_to_bits
+from utils.collection_utils import powerset
 
 
 class TruthTable:
@@ -51,18 +52,21 @@ class TruthTable:
     def negate_output(self) -> TruthTable:
         return TruthTable(bit_string=[not bit for bit in self.bit_string])
 
-    def negate_variable_all(self) -> Set[TruthTable]:
+    def negate_variables_all(self) -> Set[TruthTable]:
         return {
-            self.negate_variable(variable_index)
-            for variable_index in range(self.variables)
+            self.negate_variables(variable_indices)
+            for variable_indices in powerset(range(self.variables))
         }
 
-    def negate_variable(self, variable_index: int) -> TruthTable:
+    def negate_variables(self, variable_indices: Set[int]) -> TruthTable:
+        if not variable_indices:
+            return self
         variables = self.variables
         new_bit_string = [False] * len(self.bit_string)
         for index, bit in enumerate(self.bit_string):
             index_in_bits = index_to_bits(index, size=variables)
-            index_in_bits[variable_index] = not index_in_bits[variable_index]
+            for variable_index in variable_indices:
+                index_in_bits[variable_index] = not index_in_bits[variable_index]
             new_index = bits_to_index(index_in_bits)
             new_bit_string[new_index] = bit
         return TruthTable(bit_string=new_bit_string)
@@ -70,7 +74,9 @@ class TruthTable:
     def get_equivalent_group(self) -> FrozenSet[TruthTable]:
         all_permutations = self.permute_all()
         all_permutations_and_variable_negations = {
-            tt for permutation in all_permutations for tt in permutation.negate_variable_all()
+            tt
+            for permutation in all_permutations
+            for tt in permutation.negate_variables_all()
         }
         negated_outputs = {truth_table.negate_output() for truth_table in all_permutations_and_variable_negations}
         return frozenset(all_permutations_and_variable_negations | negated_outputs)
