@@ -35,7 +35,7 @@ class TruthTable:
         return self.bit_string == other.bit_string
 
     def sort_key(self):
-        return tuple(self.bit_string)
+        return sum(self.bit_string), tuple(self.bit_string)
 
     def permute_all(self) -> Set[TruthTable]:
         variables = self.variables
