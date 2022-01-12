@@ -10,7 +10,12 @@ from utils.bit_utils import bits_to_index, bit_string_to_repr_string, permute_li
 class TruthTable:
     def __init__(self, bit_string: List[bool]) -> None:
         self.bit_string = bit_string
-        self.variables = int(log(log(len(bit_string))))
+
+    @classmethod
+    def from_repr(cls, repr_string: str) -> TruthTable:
+        return cls(
+            bit_string=[bool(int(bit_str)) for bit_str in repr_string[3:-1]]
+        )
 
     def calc(self, input_bits: List[bool]) -> bool:
         return self.bit_string[bits_to_index(input_bits)]
@@ -25,9 +30,10 @@ class TruthTable:
         return self.bit_string == other.bit_string
 
     def permute_all(self) -> Set[TruthTable]:
+        variables = int(log(log(len(self.bit_string))))
         return {
             self.permute(permutation)
-            for permutation in permutations(range(self.variables))
+            for permutation in permutations(range(variables))
         }
 
     def permute(self, perm: Tuple[int, ...]) -> TruthTable:

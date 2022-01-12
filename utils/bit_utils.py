@@ -29,7 +29,7 @@ def bits_to_index(bits: Iterable[bool]) -> int:
 def index_to_bits(index: int) -> List[bool]:
     bits = []
     while index != 0:
-        bits = index % 2
+        bits.append(bool(index % 2))
         index /= 2
     return list(reversed(bits))
 
