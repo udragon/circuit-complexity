@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from itertools import permutations
-from math import log
+from math import log2
 from typing import List, Set, Tuple, FrozenSet
 
 from utils.bit_utils import bits_to_index, bit_string_to_repr_string, permute_list, index_to_bits
@@ -17,6 +17,10 @@ class TruthTable:
             bit_string=[bool(int(bit_str)) for bit_str in repr_string[3:-1]]
         )
 
+    @property
+    def variables(self) -> int:
+        return int(log2(len(self.bit_string)))
+
     def calc(self, input_bits: List[bool]) -> bool:
         return self.bit_string[bits_to_index(input_bits)]
 
@@ -30,16 +34,17 @@ class TruthTable:
         return self.bit_string == other.bit_string
 
     def permute_all(self) -> Set[TruthTable]:
-        variables = int(log(log(len(self.bit_string))))
+        variables = self.variables
         return {
             self.permute(permutation)
             for permutation in permutations(range(variables))
         }
 
     def permute(self, perm: Tuple[int, ...]) -> TruthTable:
+        variables = self.variables
         new_bit_string = [False] * len(self.bit_string)
         for index, bit in enumerate(self.bit_string):
-            new_index = bits_to_index(permute_list(index_to_bits(index), perm))
+            new_index = bits_to_index(permute_list(index_to_bits(index, size=variables), perm))
             new_bit_string[new_index] = bit
         return TruthTable(bit_string=new_bit_string)
 

@@ -26,16 +26,18 @@ def bits_to_index(bits: Iterable[bool]) -> int:
     return res
 
 
-def index_to_bits(index: int) -> List[bool]:
+def index_to_bits(index: int, size: Optional[int] = None) -> List[bool]:
     bits = []
     while index != 0:
         bits.append(bool(index % 2))
-        index /= 2
+        index //= 2
+    if size is not None:
+        bits += [False] * (size - len(bits))
     return list(reversed(bits))
 
 
 def permute_list(li: List[T], perm: Tuple[int, ...]) -> List[T]:
-    return [li[i-1] for i in perm]
+    return [li[i] for i in perm]
 
 
 def bit_string_to_repr_string(bit_string: List[bool]) -> str:
