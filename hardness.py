@@ -6,6 +6,7 @@ from circuit_enumeration import enumerate_circuits
 from models.circuit_model import CircuitModel
 from models.exceptions import CircuitCycleFound
 from models.truth_table import TruthTable
+from models.truth_table_class import TruthTableClass
 from utils.collection_utils import inverse_dict
 from utils.decorators import timeit
 
@@ -66,7 +67,7 @@ def deserialize_hardness_dict(filename: str = "hardness.json") -> Dict[TruthTabl
     return {TruthTable.from_repr(tt): hardness for tt, hardness in raw_dict.items()}
 
 
-def equivalence_analysis(hardness_dict: Dict[TruthTable, int]) -> Dict[int, List[FrozenSet[TruthTable]]]:
+def equivalence_analysis(hardness_dict: Dict[TruthTable, int]) -> Dict[int, List[TruthTableClass]]:
     hardness_to_tt_set = inverse_dict(hardness_dict)
     return {
         hardness: equivalence_analysis_for_tts(tt_set)
@@ -74,11 +75,14 @@ def equivalence_analysis(hardness_dict: Dict[TruthTable, int]) -> Dict[int, List
     }
 
 
-def equivalence_analysis_for_tts(tt_set: Set[TruthTable]) -> List[FrozenSet[TruthTable]]:
+def equivalence_analysis_for_tts(tt_set: Set[TruthTable]) -> List[TruthTableClass]:
     equivalent_groups = set()
     while tt_set:
         tt = tt_set.pop()
         equivalent_group = tt.get_equivalent_group()
         equivalent_groups.add(equivalent_group)
         tt_set -= equivalent_group
-    return sorted(equivalent_groups, key=len)
+    return [
+        TruthTableClass.from_truth_table_collection(equivalent_group)
+        for equivalent_group in sorted(equivalent_groups, key=len)
+    ]
