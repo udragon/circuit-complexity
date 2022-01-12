@@ -1,6 +1,6 @@
 import logging
 
-from hardness import compute_hardness_dict, serialize_hardness_dict
+from hardness import compute_hardness_dict, serialize_hardness_dict, equivalence_analysis
 from models.circuit_model import (
     ALL_BASIS_CIRCUIT_MODEL,
 )

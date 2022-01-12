@@ -1,4 +1,7 @@
-from typing import Iterator, Optional, Tuple, List, Iterable
+from typing import Iterator, Optional, Tuple, List, Iterable, TypeVar
+
+
+T = TypeVar("T")
 
 
 def enumerate_bit_strings(size: int, min_ones: int = 0, max_ones: Optional[int] = None) -> Iterator[Tuple[bool, ...]]:
@@ -21,6 +24,18 @@ def bits_to_index(bits: Iterable[bool]) -> int:
         res *= 2
         res += bit
     return res
+
+
+def index_to_bits(index: int) -> List[bool]:
+    bits = []
+    while index != 0:
+        bits = index % 2
+        index /= 2
+    return list(reversed(bits))
+
+
+def permute_list(li: List[T], perm: Tuple[int, ...]) -> List[T]:
+    return [li[i-1] for i in perm]
 
 
 def bit_string_to_repr_string(bit_string: List[bool]) -> str:
