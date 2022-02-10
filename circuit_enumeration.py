@@ -1,5 +1,6 @@
 from typing import Iterator
 
+from linear_models.linear_circuit import LinearCircuit
 from models.circuit import Circuit
 from models.circuit_model import CircuitModel
 from utils.graph_utils import enumerate_simple_acyclic_digraphs_adjacency_matrices
@@ -35,3 +36,24 @@ def enumerate_circuits(
                 node_operators=([0] * num_sources) + [int(bit) for bit in bit_string],
                 model=circuit_model,
             )
+
+
+def enumerate_linear_circuits(
+        num_inputs: int,
+        num_outputs: int,
+        circuit_size: int,
+) -> Iterator[LinearCircuit]:
+    if circuit_size < num_inputs + 1:
+        return
+
+    for adjacency_matrix in enumerate_simple_acyclic_digraphs_adjacency_matrices(
+            size=circuit_size,
+            sources=num_inputs,
+            sinks=num_outputs,
+            fan_in=2,
+    ):
+        yield LinearCircuit(
+            num_inputs=num_inputs,
+            output_nodes=[num_outputs - 1],
+            adjacency_matrix=adjacency_matrix,
+        )

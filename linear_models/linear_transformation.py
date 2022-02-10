@@ -21,7 +21,7 @@ class LinearTransformation:
         return f"LT(matrix={self.matrix})"
 
     def __hash__(self) -> int:
-        return hash(self.matrix)
+        return hash(self.matrix.tostring())
 
     def __eq__(self, other) -> bool:
-        return np.equal(self.matrix, other.matrix)
+        return np.all(np.equal(self.matrix, other.matrix))

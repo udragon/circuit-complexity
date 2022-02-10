@@ -1,11 +1,25 @@
 import logging
 from pprint import pprint
 
-from hardness import compute_hardness_dict, serialize_hardness_dict, equivalence_analysis, deserialize_hardness_dict
+from hardness import (
+    serialize_hardness_dict,
+    equivalence_analysis,
+    deserialize_hardness_dict, compute_linear_transformations_hardness_dict,
+)
 from models.circuit_model import (
     ALL_BASIS_CIRCUIT_MODEL,
 )
 from plot.plot_hardness import plot_hardness_dict
+
+
+def main_linear():
+    logging.basicConfig(level=logging.INFO)
+    hardness_dict = compute_linear_transformations_hardness_dict(
+        num_inputs=3,
+        num_outputs=1,
+        size_limit=4,
+    )
+    print(hardness_dict)
 
 
 def main():
@@ -25,4 +39,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main_linear()

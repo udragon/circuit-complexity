@@ -1,8 +1,9 @@
 import json
 import logging
-from typing import Set, Dict, Optional, List, FrozenSet
+from typing import Set, Dict, Optional, List
 
-from circuit_enumeration import enumerate_circuits
+from circuit_enumeration import enumerate_circuits, enumerate_linear_circuits
+from linear_models.linear_transformation import LinearTransformation
 from models.circuit_model import CircuitModel
 from models.exceptions import CircuitCycleFound
 from models.truth_table import TruthTable
@@ -33,6 +34,28 @@ def compute_truth_tables(
     return truth_tables
 
 
+def compute_linear_transformations(
+        num_inputs: int,
+        num_outputs: int,
+        circuit_size: int,
+) -> Set[LinearTransformation]:
+    counter = 0
+    linear_transformations = set()
+    for linear_circuit in enumerate_linear_circuits(
+            num_inputs=num_inputs,
+            num_outputs=num_outputs,
+            circuit_size=circuit_size
+    ):
+        counter += 1
+        try:
+            linear_transformations.add(linear_circuit.to_linear_transformation())
+        except CircuitCycleFound:
+            logging.error("CircuitCycleFound error")
+            pass
+    logging.info(f"Enumerated on {counter} linear circuits of size {circuit_size}.")
+    return linear_transformations
+
+
 @timeit
 def compute_hardness_dict(
         circuit_model: CircuitModel,
@@ -55,6 +78,32 @@ def compute_hardness_dict(
             if tt not in res:
                 res[tt] = circuit_size
         logging.info(f"Found {len(res)} /  {num_truth_tables} truth tables.")
+    return res
+
+
+@timeit
+def compute_linear_transformations_hardness_dict(
+        num_inputs: int,
+        num_outputs: int,
+        size_limit: Optional[int] = None,
+) -> Dict[LinearTransformation, int]:
+    num_linear_transformations = 2**(num_inputs * num_outputs)
+
+    circuit_size = 0
+    res = {}
+    while len(res) != num_linear_transformations and (size_limit is None or circuit_size + 1 <= size_limit):
+        circuit_size += 1
+        enumerated_tts = 0
+        for linear_transformation in compute_linear_transformations(
+            num_inputs=num_inputs,
+            num_outputs=num_outputs,
+            circuit_size=circuit_size,
+        ):
+            print(linear_transformation)
+            enumerated_tts += 1
+            if linear_transformation not in res:
+                res[linear_transformation] = circuit_size
+        logging.info(f"Found {len(res)} /  {num_linear_transformations} linear transformations")
     return res
 
 

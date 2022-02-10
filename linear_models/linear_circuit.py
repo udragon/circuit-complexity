@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Dict, Sequence
+from typing import List, Dict, Sequence, Set
 
 import numpy as np
 
@@ -15,14 +15,14 @@ class LinearCircuit:
     def __init__(
             self,
             num_inputs: int,
-            num_outputs: int,
+            output_nodes: List[int],
             adjacency_matrix: np.ndarray,
     ) -> None:
         num_rows, num_columns = adjacency_matrix.shape
         assert num_rows == num_columns
 
         self.num_inputs = num_inputs
-        self.num_outputs = num_outputs
+        self.output_nodes = output_nodes
         self.adjacency_matrix = adjacency_matrix
         self.num_nodes = num_rows
 
@@ -64,13 +64,15 @@ class LinearCircuit:
 
     def calc(self, input_bits: Sequence[bool]) -> List[int]:
         assert len(input_bits) == self.num_inputs
-        final_node = self._evaluate_node(
-            node_idx=self.num_nodes - 1,
-            input_bits=input_bits,
-            calculation_path=[],
-            eval_cache={},
-        )
-        return [final_node]
+        return [
+            self._evaluate_node(
+                node_idx=output_node,
+                input_bits=input_bits,
+                calculation_path=[],
+                eval_cache={},
+            )
+            for output_node in self.output_nodes
+        ]
 
     def to_linear_transformation(self) -> LinearTransformation:
         return LinearTransformation(matrix=np.array(
@@ -79,3 +81,12 @@ class LinearCircuit:
                 for basis_vector in get_basis_vectors(self.num_inputs)
             ]
         ))
+
+    def __repr__(self):
+        return (
+            f"LinearCircuit("
+            f"num_inputs: {self.num_inputs}"
+            f"output_nodes: {self.output_nodes}"
+            f"adjacency_matrix: {self.adjacency_matrix}"
+            f")"
+        )
