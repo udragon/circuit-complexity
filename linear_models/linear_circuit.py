@@ -42,7 +42,8 @@ class LinearCircuit:
             calculation_path: List[int],
             eval_cache: Dict[int, bool],
     ) -> bool:
-
+        if node_idx == -1:
+            return False
         if node_idx in calculation_path:
             raise CircuitCycleFound
         else:

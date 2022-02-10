@@ -44,7 +44,7 @@ def enumerate_linear_circuits(
         num_outputs: int,
         circuit_size: int,
 ) -> Iterator[LinearCircuit]:
-    if circuit_size < num_inputs + 1:
+    if circuit_size < num_inputs:
         return
 
     for adjacency_matrix in enumerate_simple_acyclic_digraphs_adjacency_matrices(
@@ -53,8 +53,8 @@ def enumerate_linear_circuits(
             sinks=min(num_outputs, circuit_size - num_inputs),
             fan_in=2,
     ):
-        for output_nodes in itertools.product(range(circuit_size), repeat=num_outputs):
-            if circuit_size - 1 not in output_nodes:
+        for output_nodes in itertools.product(range(-1, circuit_size), repeat=num_outputs):
+            if circuit_size > num_inputs and circuit_size - 1 not in output_nodes:
                 continue
             yield LinearCircuit(
                 num_inputs=num_inputs,
