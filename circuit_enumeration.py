@@ -54,6 +54,6 @@ def enumerate_linear_circuits(
     ):
         yield LinearCircuit(
             num_inputs=num_inputs,
-            output_nodes=[num_outputs - 1],
+            output_nodes=[circuit_size - 1],
             adjacency_matrix=adjacency_matrix,
         )
