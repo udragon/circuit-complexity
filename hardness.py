@@ -99,7 +99,6 @@ def compute_linear_transformations_hardness_dict(
             num_outputs=num_outputs,
             circuit_size=circuit_size,
         ):
-            print(linear_transformation)
             enumerated_tts += 1
             if linear_transformation not in res:
                 res[linear_transformation] = circuit_size
