@@ -34,6 +34,13 @@ WIDE_BASIS_CIRCUIT_MODEL = CircuitModel(
 )
 
 
+LINEAR_CIRCUIT_MODEL = CircuitModel(
+    basis=(xor_op, ),
+    fan_in=2,
+    with_not_leaves=False,
+)
+
+
 ALL_BASIS_CIRCUIT_MODEL = CircuitModel(
     basis=get_all_binary_operations(),
     fan_in=2,
