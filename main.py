@@ -16,8 +16,8 @@ def main_linear():
     logging.basicConfig(level=logging.INFO)
     hardness_dict = compute_linear_transformations_hardness_dict(
         num_inputs=3,
-        num_outputs=1,
-        size_limit=6,
+        num_outputs=2,
+        size_limit=8,
     )
     print(hardness_dict)
 
