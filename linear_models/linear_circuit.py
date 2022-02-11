@@ -84,12 +84,11 @@ class LinearCircuit:
         for node_values in node_values_by_basis_vector:
             node_values.append(False)  # to support node idx -1 => always False output
         return [
-            LinearTransformation(matrix=np.array(
-                [
-                    [node_values[output_node] for output_node in output_nodes]
+            LinearTransformation(matrix=tuple(
+                    tuple(node_values[output_node] for output_node in output_nodes)
                     for node_values in node_values_by_basis_vector
-                ]
-            ))
+                )
+            )
             for output_nodes in self.possible_output_nodes
         ]
 

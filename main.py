@@ -17,7 +17,7 @@ def main_linear():
     hardness_dict = compute_linear_transformations_hardness_dict(
         num_inputs=4,
         num_outputs=3,
-        size_limit=9,
+        size_limit=None,
     )
 
 
