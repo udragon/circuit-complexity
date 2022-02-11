@@ -65,12 +65,13 @@ class LinearCircuit:
 
     def calc(self, input_bits: Sequence[bool]) -> List[int]:
         assert len(input_bits) == self.num_inputs
+        eval_cache = {}
         return [
             self._evaluate_node(
                 node_idx=output_node,
                 input_bits=input_bits,
                 calculation_path=[],
-                eval_cache={},
+                eval_cache=eval_cache,
             )
             for output_node in self.output_nodes
         ]
