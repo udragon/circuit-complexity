@@ -133,3 +133,6 @@ dmypy.json
 
 # Project Specific
 hardness.json
+
+# Profile
+profiled

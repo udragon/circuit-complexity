@@ -15,14 +15,14 @@ class LinearCircuit:
     def __init__(
             self,
             num_inputs: int,
-            output_nodes: List[int],
+            possible_output_nodes: List[List[int]],
             adjacency_matrix: np.ndarray,
     ) -> None:
         num_rows, num_columns = adjacency_matrix.shape
         assert num_rows == num_columns
 
         self.num_inputs = num_inputs
-        self.output_nodes = output_nodes
+        self.possible_output_nodes = possible_output_nodes
         self.adjacency_matrix = adjacency_matrix
         self.num_nodes = num_rows
 
@@ -63,32 +63,41 @@ class LinearCircuit:
         eval_cache[node_idx] = res
         return res
 
-    def calc(self, input_bits: Sequence[bool]) -> List[int]:
+    def calc_all(self, input_bits: Sequence[bool]) -> List[int]:
         assert len(input_bits) == self.num_inputs
         eval_cache = {}
         return [
             self._evaluate_node(
-                node_idx=output_node,
+                node_idx=node_idx,
                 input_bits=input_bits,
                 calculation_path=[],
                 eval_cache=eval_cache,
             )
-            for output_node in self.output_nodes
+            for node_idx in range(self.num_nodes)
         ]
 
-    def to_linear_transformation(self) -> LinearTransformation:
-        return LinearTransformation(matrix=np.array(
-            [
-                self.calc(basis_vector)
-                for basis_vector in get_basis_vectors(self.num_inputs)
-            ]
-        ))
+    def to_linear_transformations(self) -> List[LinearTransformation]:
+        node_values_by_basis_vector = [
+            self.calc_all(input_bits=basis_vector)
+            for basis_vector in get_basis_vectors(self.num_inputs)
+        ]
+        for node_values in node_values_by_basis_vector:
+            node_values.append(False)  # to support node idx -1 => always False output
+        return [
+            LinearTransformation(matrix=np.array(
+                [
+                    [node_values[output_node] for output_node in output_nodes]
+                    for node_values in node_values_by_basis_vector
+                ]
+            ))
+            for output_nodes in self.possible_output_nodes
+        ]
 
     def __repr__(self):
         return (
             f"LinearCircuit("
             f"num_inputs: {self.num_inputs}"
-            f"output_nodes: {self.output_nodes}"
+            f"possible_output_nodes: {self.possible_output_nodes}"
             f"adjacency_matrix: {self.adjacency_matrix}"
             f")"
         )

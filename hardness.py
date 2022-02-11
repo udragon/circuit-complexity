@@ -48,7 +48,7 @@ def compute_linear_transformations(
     ):
         counter += 1
         try:
-            linear_transformations.add(linear_circuit.to_linear_transformation())
+            linear_transformations.update(linear_circuit.to_linear_transformations())
         except CircuitCycleFound:
             logging.error("CircuitCycleFound error")
             pass

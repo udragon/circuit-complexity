@@ -53,11 +53,13 @@ def enumerate_linear_circuits(
             sinks=min(num_outputs, circuit_size - num_inputs),
             fan_in=2,
     ):
-        for output_nodes in itertools.product(range(-1, circuit_size), repeat=num_outputs):
-            if circuit_size > num_inputs and circuit_size - 1 not in output_nodes:
-                continue
-            yield LinearCircuit(
-                num_inputs=num_inputs,
-                output_nodes=output_nodes,
-                adjacency_matrix=adjacency_matrix,
-            )
+        possible_output_nodes = [
+            output_nodes
+            for output_nodes in itertools.product(range(-1, circuit_size), repeat=num_outputs)
+            if circuit_size <= num_inputs or circuit_size - 1 in output_nodes
+        ]
+        yield LinearCircuit(
+            num_inputs=num_inputs,
+            possible_output_nodes=possible_output_nodes,
+            adjacency_matrix=adjacency_matrix,
+        )
