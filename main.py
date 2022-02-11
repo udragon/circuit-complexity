@@ -15,11 +15,10 @@ from plot.plot_hardness import plot_hardness_dict
 def main_linear():
     logging.basicConfig(level=logging.INFO)
     hardness_dict = compute_linear_transformations_hardness_dict(
-        num_inputs=3,
-        num_outputs=2,
-        size_limit=9,
+        num_inputs=4,
+        num_outputs=3,
+        size_limit=8,
     )
-    print(hardness_dict)
 
 
 def main():
