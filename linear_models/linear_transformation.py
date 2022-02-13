@@ -26,7 +26,7 @@ class LinearTransformation:
     def create_linear_transformation_class(self) -> Set[LinearTransformation]:
         linear_transformation_class: Set[LinearTransformation] = set()
         for row_permutation in itertools.permutations(range(self.num_rows)):
-            for column_permutation in itertools.permutations(range(self.num_rows)):
+            for column_permutation in itertools.permutations(range(self.num_columns)):
                 new_matrix = tuple(
                     tuple(self.matrix[j][i] for i in column_permutation)
                     for j in row_permutation
