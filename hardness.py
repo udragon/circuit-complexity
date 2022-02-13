@@ -123,6 +123,17 @@ def equivalence_analysis(hardness_dict: Dict[TruthTable, int]) -> Dict[int, List
     }
 
 
+def equivalence_analysis_for_linear_transformations(
+        lt_set: Set[LinearTransformation]
+) -> List[Set[LinearTransformation]]:
+    lt_classes = []
+    for lt in lt_set:
+        if any(lt in lt_class for lt_class in lt_classes):
+            continue
+        lt_classes.append(lt.create_linear_transformation_class())
+    return lt_classes
+
+
 def equivalence_analysis_for_tts(tt_set: Set[TruthTable]) -> List[TruthTableClass]:
     equivalent_groups = set()
     while tt_set:
