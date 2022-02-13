@@ -8,6 +8,7 @@ from hardness import (
     equivalence_analysis_for_linear_transformations,
 )
 from linear_models.linear_transformation import LinearTransformation
+from linear_models.linear_transformation_class import LinearTransformationClass
 from models.circuit_model import (
     ALL_BASIS_CIRCUIT_MODEL,
 )
@@ -18,7 +19,7 @@ def main_linear():
     logging.basicConfig(level=logging.INFO)
     hardness_dict = compute_linear_transformations_hardness_dict(
         num_inputs=3,
-        num_outputs=3,
+        num_outputs=2,
         size_limit=None,
     )
     max_hardness = max(hardness_dict.values())
@@ -30,7 +31,7 @@ def main_linear():
     print(f"Found {len(lt_of_max_hardness)} linear transformations of max hardness.")
     lt_classes = equivalence_analysis_for_linear_transformations(lt_of_max_hardness)
     print(f"Found {len(lt_classes)} linear transformations classes of max hardness.")
-    pprint([min(lt_class, key=LinearTransformation.sort_key) for lt_class in lt_classes])
+    pprint([LinearTransformationClass.from_lt_collection(lt_class) for lt_class in lt_classes])
 
 
 def main():
