@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Collection
+from typing import Collection, Tuple
 
 from linear_models.linear_transformation import LinearTransformation
 
@@ -20,3 +20,6 @@ class LinearTransformationClass:
             size=len(tt_set),
             sparsity=representative.sparsity,
         )
+
+    def sort_key(self) -> Tuple[int, int]:
+        return self.sparsity, -self.size

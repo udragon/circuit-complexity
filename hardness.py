@@ -148,10 +148,10 @@ def equivalence_analysis_for_lt_set(
         if any(lt in lt_class for lt_class in lt_classes):
             continue
         lt_classes.append(lt.create_linear_transformation_class())
-    return [
+    return sorted([
         LinearTransformationClass.from_lt_collection(lt_class)
         for lt_class in lt_classes
-    ]
+    ], key=LinearTransformationClass.sort_key)
 
 
 def equivalence_analysis_for_tt_set(tt_set: Set[TruthTable]) -> List[TruthTableClass]:
