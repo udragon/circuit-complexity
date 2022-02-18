@@ -10,11 +10,13 @@ from linear_models.linear_transformation import LinearTransformation
 class LinearTransformationClass:
     representative: LinearTransformation
     size: int
+    sparsity: int
 
     @classmethod
     def from_lt_collection(cls, tt_set: Collection[LinearTransformation]) -> LinearTransformationClass:
         representative = min(tt_set, key=LinearTransformation.sort_key)
         return cls(
             representative=representative,
-            size=len(tt_set)
+            size=len(tt_set),
+            sparsity=representative.sparsity,
         )

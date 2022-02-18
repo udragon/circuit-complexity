@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import itertools
-from typing import Tuple, Set, Sequence
+from typing import Set, Sequence
 
 
 class LinearTransformation:
@@ -33,3 +33,7 @@ class LinearTransformation:
                 )
                 linear_transformation_class.add(LinearTransformation(matrix=new_matrix))
         return linear_transformation_class
+
+    @property
+    def sparsity(self) -> int:
+        return sum(sum(row) for row in self.matrix)

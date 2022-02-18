@@ -4,6 +4,7 @@ from typing import Set, Dict, Optional, List
 
 from circuit_enumeration import enumerate_circuits, enumerate_linear_circuits
 from linear_models.linear_transformation import LinearTransformation
+from linear_models.linear_transformation_class import LinearTransformationClass
 from models.circuit_model import CircuitModel
 from models.exceptions import CircuitCycleFound
 from models.truth_table import TruthTable
@@ -41,11 +42,17 @@ def compute_linear_transformations(
 ) -> Set[LinearTransformation]:
     counter = 0
     linear_transformations = set()
-    for linear_circuit in enumerate_linear_circuits(
+    logging.info("Creating all linear circuits...")
+    linear_circuits = [
+        linear_circuit
+        for linear_circuit in enumerate_linear_circuits(
             num_inputs=num_inputs,
             num_outputs=num_outputs,
             circuit_size=circuit_size
-    ):
+        )
+    ]
+    logging.info(f"Found {len(linear_circuits)} circuits. Calculating all transformations...")
+    for linear_circuit in linear_circuits:
         counter += 1
         try:
             linear_transformations.update(linear_circuit.to_linear_transformations())
@@ -115,26 +122,39 @@ def deserialize_hardness_dict(filename: str = "hardness.json") -> Dict[TruthTabl
     return {TruthTable.from_repr(tt): hardness for tt, hardness in raw_dict.items()}
 
 
-def equivalence_analysis(hardness_dict: Dict[TruthTable, int]) -> Dict[int, List[TruthTableClass]]:
+def equivalence_analysis_for_lts(
+        hardness_dict: Dict[LinearTransformation, int]
+) -> Dict[int, List[LinearTransformationClass]]:
+    hardness_to_lt_set = inverse_dict(hardness_dict)
+    return {
+        hardness: equivalence_analysis_for_lt_set(lt_set)
+        for hardness, lt_set in hardness_to_lt_set.items()
+    }
+
+
+def equivalence_analysis_for_tts(hardness_dict: Dict[TruthTable, int]) -> Dict[int, List[TruthTableClass]]:
     hardness_to_tt_set = inverse_dict(hardness_dict)
     return {
-        hardness: equivalence_analysis_for_tts(tt_set)
+        hardness: equivalence_analysis_for_tt_set(tt_set)
         for hardness, tt_set in hardness_to_tt_set.items()
     }
 
 
-def equivalence_analysis_for_linear_transformations(
+def equivalence_analysis_for_lt_set(
         lt_set: Set[LinearTransformation]
-) -> List[Set[LinearTransformation]]:
+) -> List[LinearTransformationClass]:
     lt_classes = []
     for lt in lt_set:
         if any(lt in lt_class for lt_class in lt_classes):
             continue
         lt_classes.append(lt.create_linear_transformation_class())
-    return lt_classes
+    return [
+        LinearTransformationClass.from_lt_collection(lt_class)
+        for lt_class in lt_classes
+    ]
 
 
-def equivalence_analysis_for_tts(tt_set: Set[TruthTable]) -> List[TruthTableClass]:
+def equivalence_analysis_for_tt_set(tt_set: Set[TruthTable]) -> List[TruthTableClass]:
     equivalent_groups = set()
     while tt_set:
         tt = tt_set.pop()
